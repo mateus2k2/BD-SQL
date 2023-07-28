@@ -1,0 +1,75 @@
+Funcionario(CPF, DataNasc, Nome, Salario)
+
+Jogador(CPF, Assistencias, FaltasFeitas, FaltasSofridas, Gols)
+    Jogador[CPF ] →B Funcionario[CPF]
+
+DaBase(CPF, Categoria)
+    DaBase[CPF] →B Jogador[CPF]
+
+Emprestado(CPF,Porcentagem,codTime,Data)
+    Emprestado[codT ime] →B Time[Codigo]
+    Emprestado[CPF] →B Jogador[CPF]
+
+PorEmprestimo(CPF,Porcentagem,codTime,Data)
+    PorEmprestimo[codTime] →B Time[Codigo]
+    PorEmprestimo[CPF] →B Jogador[CPF]
+
+Time(Codigo,Nome)
+
+Medico(CPF,CRM,especialidade)
+    Medico[especialidade] →B EspecialidadeMedico[Tipo]
+    Medico[CPF] →B Funcionario[CP F ]
+
+Tecnico(CPF, Vitorias, derrotas, especialidade)
+    Tecnico[especialidade] →B EspecialidaddeTecnico[Tipo]
+    Tecnico[CPF] → B Funcionario[CPF]
+
+Contrato(CPF,numContrato,DataFim,DataInicio)
+    Contrato[CPF] →B Funcionario[CPF]
+
+EspecialidadeTecnico(Tipo)
+
+EspecialidadeMedico(Tipo)
+
+Partida(Adversario,Data, codTimeAdv, Resultado,Sofridos, Feitos, NomeCamp, Publico, PublicoAdv, NomeEstadio, EndEstadio)
+    Partida[NomeCamp] →B Campeonato[Nome]
+    Partida[NomeEstadio, EndEstadio] →B Estadio[Nome, Endereco]
+    Partida[codT imeAdv] →B Time[Codigo]
+
+Campeonato(nome,Vitorias, Derrotas, Empates, Posicao, SaldoGols,Sofridos, Feitos,AnoTemp)
+    Campeonato[AnoTemp] →B Temporada[Ano]
+
+Temporada(ano,Empates, Derrotas, Vitorias, Feitos, Sofridos, SaldoGols)
+
+SocioTorcedor(CPF,Nome,Celular,Nascimento, Email,Endereco,Ativo)
+
+Plano(Nome,Valor)
+
+Estadio(Nome,endereco,Capacidade)
+
+Patrocinador(CNPJ,Marca, MontanteInvestido)
+
+Joga(CPF,Data,Posiçao)
+    Joga[Data] →B Partida[Data]
+    Joga[CPF ] →B Jogador[CPF]
+
+FazGol(CPF,Data,Minuto)
+    FazGol[Data] →B Partida[Data]
+    FazGol[CPF] →B Jogador[CPF] 
+
+
+Vencido(NomeCampeonato, AnoTemporada)
+    Vencido[NomeCampeonato] →B Campeonato[nome]
+    Vencido[AnoTemporada] →B Temporada[ano]
+
+Assistem(Data,CPF)
+    Assistem[Data] →B Partida[Data]
+    Assistem[CPF] →B SocioTorcedor[CPF]
+
+Patrocina(Nome,endereco,CNPJ)
+    Patrocina[Nome, Endereco] →B Estadio[Nome, Endereco]
+    Patrocina[CNPJ] →B Patrocinador[CNPJ]
+
+Paga(Nome,CPF)
+    Paga[CPF] →B SocioTorcedor[CPF]
+    Paga[Nome] →B Plano[Nome]
