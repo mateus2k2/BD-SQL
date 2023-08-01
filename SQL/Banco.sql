@@ -101,7 +101,7 @@ CREATE TABLE Temporada (
 
 -- Tabela Campeonato
 CREATE TABLE Campeonato (
-    nome VARCHAR(100) PRIMARY KEY,
+    nome VARCHAR(100),
     Vitorias INT,
     Derrotas INT,
     Empates INT,
@@ -109,7 +109,8 @@ CREATE TABLE Campeonato (
     Sofridos INT,
     Feitos INT,
     AnoTemp VARCHAR(4),
-    FOREIGN KEY (AnoTemp) REFERENCES Temporada(ano)
+    FOREIGN KEY (AnoTemp) REFERENCES Temporada(ano),
+    PRIMARY KEY (nome, AnoTemp)
 );
 
 
@@ -127,10 +128,11 @@ CREATE TABLE Partida (
     Sofridos INT,
     Feitos INT,
     NomeCamp VARCHAR(100),
+    AnoTemporada VARCHAR(4),
     Publico INT,
     PublicoAdv INT,
     NomeEstadio VARCHAR(100),
-    FOREIGN KEY (NomeCamp) REFERENCES Campeonato(Nome),
+    FOREIGN KEY (NomeCamp, AnoTemporada) REFERENCES Campeonato(Nome, AnoTemp),
     FOREIGN KEY (NomeEstadio) REFERENCES Estadio(Nome),
     FOREIGN KEY (codTimeAdv) REFERENCES Time(Codigo)
 );
@@ -150,8 +152,6 @@ CREATE TABLE Plano (
     Nome VARCHAR(100) PRIMARY KEY,
     Valor DECIMAL(10, 2)
 );
-
-
 
 -- Tabela Patrocinador
 CREATE TABLE Patrocinador (
@@ -185,8 +185,7 @@ CREATE TABLE Vencido (
     NomeCampeonato VARCHAR(100),
     AnoTemporada VARCHAR(4),
     PRIMARY KEY (NomeCampeonato, AnoTemporada),
-    FOREIGN KEY (NomeCampeonato) REFERENCES Campeonato(nome),
-    FOREIGN KEY (AnoTemporada) REFERENCES Temporada(ano)
+    FOREIGN KEY (NomeCampeonato, AnoTemporada) REFERENCES Campeonato(nome, AnoTemp)
 );
 
 -- Tabela Assistem
