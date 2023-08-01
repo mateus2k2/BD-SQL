@@ -1,0 +1,5 @@
+Rodar banco portegress via docker
+docker run    --name Trabalho2BD    -p 5432:5432    -e POSTGRES_USER=postgres    -e POSTGRES_PASSWORD=postgres    -e POSTGRES_DB=rBDTime    -d    postgres
+
+
+Conferir os dados de usuario, senha, porta e nome do banco no codigo em python
