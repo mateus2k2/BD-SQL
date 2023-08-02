@@ -116,8 +116,9 @@ CREATE TABLE Campeonato (
 
 -- Tabela Estadio
 CREATE TABLE Estadio (
-    Nome VARCHAR(100) PRIMARY KEY,
-    endereco VARCHAR(200) UNIQUE,
+    Nome VARCHAR(100),
+    endereco VARCHAR(200),
+    PRIMARY KEY (Nome, endereco), 
     Capacidade INT
 );
 
@@ -132,8 +133,9 @@ CREATE TABLE Partida (
     Publico INT,
     PublicoAdv INT,
     NomeEstadio VARCHAR(100),
+    EnderecoEstadio VARCHAR(200),
     FOREIGN KEY (NomeCamp, AnoTemporada) REFERENCES Campeonato(Nome, AnoTemp),
-    FOREIGN KEY (NomeEstadio) REFERENCES Estadio(Nome),
+    FOREIGN KEY (NomeEstadio, EnderecoEstadio) REFERENCES Estadio(Nome, endereco),
     FOREIGN KEY (codTimeAdv) REFERENCES Time(Codigo)
 );
 
@@ -200,9 +202,10 @@ CREATE TABLE Assistem (
 -- Tabela Patrocina
 CREATE TABLE Patrocina (
     Nome VARCHAR(100),
+    Endereco VARCHAR(200),
     CNPJ VARCHAR(18),
     PRIMARY KEY (Nome),
-    FOREIGN KEY (Nome) REFERENCES Estadio(Nome),
+    FOREIGN KEY (Nome, Endereco) REFERENCES Estadio(Nome, endereco),
     FOREIGN KEY (CNPJ) REFERENCES Patrocinador(CNPJ)
 );
 

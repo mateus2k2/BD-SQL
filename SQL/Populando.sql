@@ -64,21 +64,21 @@ VALUES ('Mineirão', 'Rua dos Esportes, 123', 50000),
        ('Itaquerão', 'Pampulha, 23', 65000);
 
 -- Inserção de algumas partidas
-INSERT INTO Partida (Data, codTimeAdv, Sofridos, Feitos, NomeCamp, Publico, PublicoAdv, NomeEstadio)
-VALUES ('2023-08-01', 2, 0, 1, 'Libertadores', 30000, 20000, 'Mineirão'),
-       ('2023-09-15', 1, 1, 2, 'Brasileirão', 15000, 15000, 'Itaquerão'),
-       ('2023-06-01', 3, 2, 3, 'Estadual', 30000, 30000, 'Morumbi'),
-       ('2023-05-15', 4, 0, 2, 'Brasileirão', 15000, 15000, 'Maracanã'),
-       ('2023-04-01', 5, 1, 1, 'Copa Do Brasil', 20000, 20000, 'Mineirão'),
-       ('2023-03-15', 6, 0, 2, 'Estadual', 15000, 25000, 'Itaquerão'),
-       ('2023-02-01', 7, 2, 1, 'Libertadores', 25000, 20000, 'Morumbi'),
-       ('2023-01-15', 8, 3, 4, 'Brasileirão', 15000, 35000, 'Itaquerão'),
-       ('2023-10-01', 9, 0, 0, 'Estadual', 30000, 20000, 'Mineirão'),
-       ('2023-11-15', 10, 4, 2, 'Brasileirão', 15000, 25000, 'Maracanã'),
-       ('2023-12-01', 8, 0, 2, 'Libertadores', 10000, 20000, 'Mineirão'),
-       ('2023-09-30', 9, 2, 1, 'Brasileirão', 25000, 25000, 'Maracanã'),
-       ('2023-08-20', 7, 1, 3, 'Copa Do Brasil', 20000, 20000, 'Morumbi'),
-       ('2023-05-10', 6, 3, 1, 'Estadual', 15000, 20000, 'Maracanã');
+INSERT INTO Partida (Data, codTimeAdv, Sofridos, Feitos, NomeCamp, Publico, PublicoAdv, NomeEstadio, EnderecoEstadio)
+VALUES ('2023-08-01', 2, 0, 1, 'Libertadores', 30000, 20000, 'Mineirão', 'Rua dos Esportes, 123'),
+       ('2023-09-15', 1, 1, 2, 'Brasileirão', 15000, 15000, 'Itaquerão', 'Pampulha, 23'),
+       ('2023-06-01', 3, 2, 3, 'Estadual', 30000, 30000, 'Morumbi', 'Praça Tiradentes, 156'),
+       ('2023-05-15', 4, 0, 2, 'Brasileirão', 15000, 15000, 'Maracanã', 'Avenida dos Jogos, 789'),
+       ('2023-04-01', 5, 1, 1, 'Copa Do Brasil', 20000, 20000, 'Mineirão', 'Rua dos Esportes, 123'),
+       ('2023-03-15', 6, 0, 2, 'Estadual', 15000, 25000, 'Itaquerão', 'Pampulha, 23'),
+       ('2023-02-01', 7, 2, 1, 'Libertadores', 25000, 20000, 'Morumbi', 'Praça Tiradentes, 156'),
+       ('2023-01-15', 8, 3, 4, 'Brasileirão', 15000, 35000, 'Itaquerão', 'Pampulha, 23'),
+       ('2023-10-01', 9, 0, 0, 'Estadual', 30000, 20000, 'Mineirão', 'Rua dos Esportes, 123'),
+       ('2023-11-15', 10, 4, 2, 'Brasileirão', 15000, 25000, 'Maracanã', 'Avenida dos Jogos, 789'),
+       ('2023-12-01', 8, 0, 2, 'Libertadores', 10000, 20000, 'Mineirão', 'Rua dos Esportes, 123'),
+       ('2023-09-30', 9, 2, 1, 'Brasileirão', 25000, 25000, 'Maracanã', 'Avenida dos Jogos, 789'),
+       ('2023-08-20', 7, 1, 3, 'Copa Do Brasil', 20000, 20000, 'Morumbi', 'Praça Tiradentes, 156'),
+       ('2023-05-10', 6, 3, 1, 'Estadual', 15000, 20000, 'Maracanã', 'Avenida dos Jogos, 789');
 
 -- Inserção de algumas especialidades de técnico
 INSERT INTO EspecialidadeTecnico (Tipo)
@@ -233,9 +233,9 @@ VALUES ('2023-10-01', '837.836.670-70'),
        ('2023-01-15', '368.857.300-50');
 
 -- Inserção de estádios que são patrocinados por patrocinadores
-INSERT INTO Patrocina (Nome, CNPJ)
-VALUES ('Mineirão', '11.111.111/0001-11'),
-       ('Maracanã', '22.222.222/0001-22');
+INSERT INTO Patrocina (Nome, Endereco, CNPJ)
+VALUES ('Mineirão', 'Rua dos Esportes, 123', '11.111.111/0001-11'),
+       ('Maracanã', 'Avenida dos Jogos, 789', '22.222.222/0001-22');
 
 -- Inserção de pagamentos de sócios-torcedores
 INSERT INTO Paga (Nome, CPF, DataInicio, DataFim)
