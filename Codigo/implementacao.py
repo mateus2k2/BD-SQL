@@ -3,7 +3,7 @@ import psycopg2
 
 # Function to get database connection
 def get_database_connection():
-    db_name = os.environ.get('DB_NAME', 'postgres')
+    db_name = os.environ.get('DB_NAME', 'BDTime')
     db_user = os.environ.get('DB_USER','postgres')
     db_password = os.environ.get('DB_PASS','postgres')
     db_host = os.environ.get('DB_HOST', 'localhost')
@@ -70,7 +70,7 @@ def query_1(connection):
     try:
         with connection.cursor() as cursor:
             cursor.execute(
-                "SELECT * FROM Jogador WHERE CPF IN (SELECT CPF FROM poremprestimo WHERE codTime = %s)",
+                "SELECT * FROM jogador WHERE CPF IN (SELECT CPF FROM poremprestimo WHERE codTime = %s)",
                 (cod_time,)
             )
             result = cursor.fetchall()
@@ -92,7 +92,7 @@ def query_1(connection):
 
             else:
                 print("Nenhum jogador veio emprestado do", time[0].replace('Time ' , ''))
-    except (connection):
+    except:
         print("Erro ao tentar buscar jogadores emprestados deste time")
 
 def query_2(connection):
@@ -140,7 +140,7 @@ def query_3(connection):
                     print("Email:", row[4], "\n")
             else:
                 print("Nenhum socio torcedor assina plano de um acima de um certo preço")
-    except (connection):
+    except:
         print("Erro ao tentar buscar socio torcedores que assinam plano de um acima de um certo preço")
             
 def query_4(connection):
@@ -159,58 +159,66 @@ def query_4(connection):
                     print("salario:", row[3])
             else:
                 print("Nenhum funcionario com nome: ", nome)
-    except (connection):
+    except:
         print("Erro ao tentar buscar funcionario com nome: ", nome)
             
 def query_5(connection):
     jogador_name = input("Insira o nome do jogador: ")
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT Contrato.*, Funcionario.Nome AS NomeFuncionario, Jogador.Assistencias, Jogador.FaltasFeitas, Jogador.FaltasSofridas, Jogador.Gols "
-            "FROM Contrato "
-            "JOIN Funcionario ON Contrato.CPF = Funcionario.CPF "
-            "JOIN Jogador ON Contrato.CPF = Jogador.CPF "
-            "WHERE Funcionario.Nome = %s",
-            (jogador_name,)
-        )
-        result = cursor.fetchall()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT Contrato.*, Funcionario.Nome AS NomeFuncionario, Jogador.Assistencias, Jogador.FaltasFeitas, Jogador.FaltasSofridas, Jogador.Gols "
+                "FROM Contrato "
+                "JOIN Funcionario ON Contrato.CPF = Funcionario.CPF "
+                "JOIN Jogador ON Contrato.CPF = Jogador.CPF "
+                "WHERE Funcionario.Nome = %s",
+                (jogador_name,)
+            )
+            result = cursor.fetchall()
 
-        if result:
-            print(f"Dados do jogador '{jogador_name}':")
-            for row in result:
-                print("CPF:", row[0])
-                print("numContrato:", row[1])
-                print("DataFim:", row[2])
-                print("DataInicio:", row[3])
-                print()
-        else:
-            print(f"Sem informacoes encontradas para jogador '{jogador_name}'")
+            if result:
+                print(f"Dados do jogador '{jogador_name}':")
+                for row in result:
+                    print("CPF:", row[0])
+                    print("numContrato:", row[1])
+                    print("DataFim:", row[2])
+                    print("DataInicio:", row[3])
+                    print()
+            else:
+                print(f"Sem informacoes encontradas para jogador '{jogador_name}'")
+    except:
+        print("Erro ao tentar buscar jogador com nome: ", jogador_name)
 
 
             
 def update_1(connection):
     cpf = input("Insira o CPF do funcionario: ")
     new_salary = input("Insira o novo salario: ")
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "UPDATE Funcionario SET Salario = %s WHERE CPF = %s",
-            (new_salary, cpf)
-        )
-        connection.commit()
-        print("Salario atualizado com sucesso!")
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "UPDATE Funcionario SET Salario = %s WHERE CPF = %s",
+                (new_salary, cpf)
+            )
+            connection.commit()
+            print("Salario atualizado com sucesso!")
+    except:
+        print("Erro ao tentar atualizar salario do funcionario")
 
 def update_2(connection):
     cpf = input("Insira o cpf do jogador: ")
     new_contract_date = input("Favor inserir nova data do contrato no formato (YYYY-MM-DD): ")
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "UPDATE Contrato SET DataFim = %s WHERE CPF = %s",
-            (new_contract_date, cpf)
-        )
-        connection.commit()
-        print("Data do contrato atualizada com sucesso!")
-
-
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "UPDATE Contrato SET DataFim = %s WHERE CPF = %s",
+                (new_contract_date, cpf)
+            )
+            connection.commit()
+            print("Data do contrato atualizada com sucesso!")
+    except:
+        print("Erro ao tentar atualizar data do contrato do jogador")        
+    
 
 def main():
     connection = get_database_connection()
@@ -240,18 +248,19 @@ def main():
 
         elif main_choice == '2':
             while True:
-                insert_choice = display_update_menu()
-                if insert_choice == '1':
+                update_choice = display_update_menu()
+                if update_choice == '1':
                     update_1(connection)
-                elif insert_choice == '2':
+                elif update_choice == '2':
                     update_2(connection)
-                elif insert_choice == '3':
+                elif update_choice == '3':
                     break
                 else:
                     print("Invalid choice. Please try again.")
 
         elif main_choice == '3':
             break
+        
         else:
             print("Invalid choice. Please try again.")
 
