@@ -177,7 +177,7 @@ CREATE TABLE FazGol (
     CPF VARCHAR(14),
     Data DATE,
     Minuto INT,
-    PRIMARY KEY (CPF, Data,Minuto),
+    PRIMARY KEY (CPF, Data, Minuto),
     FOREIGN KEY (Data) REFERENCES Partida(Data),
     FOREIGN KEY (CPF) REFERENCES Jogador(CPF)
 );
