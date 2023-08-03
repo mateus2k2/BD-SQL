@@ -3,7 +3,7 @@ import psycopg2
 
 # Function to get database connection
 def get_database_connection():
-    db_name = os.environ.get('DB_NAME', 'BDTime')
+    db_name = os.environ.get('DB_NAME', 'postgres')
     db_user = os.environ.get('DB_USER','postgres')
     db_password = os.environ.get('DB_PASS','postgres')
     db_host = os.environ.get('DB_HOST', 'localhost')
