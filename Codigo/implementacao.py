@@ -3,7 +3,7 @@ import psycopg2
 
 # Function to get database connection
 def get_database_connection():
-    db_name = os.environ.get('DB_NAME', 'BDTime')
+    db_name = os.environ.get('DB_NAME', 'postgres')
     db_user = os.environ.get('DB_USER','postgres')
     db_password = os.environ.get('DB_PASS','postgres')
     db_host = os.environ.get('DB_HOST', 'localhost')
@@ -26,11 +26,11 @@ def get_database_connection():
 def display_main_menu():
     print()
     print("--------------------------------------------------------------------------------------------------------------------------------")
-    print("Main Menu:")
-    print("1. Query data")
-    print("2. Update data")
-    print("3. Exit")
-    main_choice = input("Enter your choice (1/2/3): ")
+    print("Menu Principal:")
+    print("1. Buscar no banco")
+    print("2. Atualizar banco")
+    print("3. Sair")
+    main_choice = input("Selecione sua escolha (1/2/3): ")
     print("--------------------------------------------------------------------------------------------------------------------------------")
     print()
     return main_choice
@@ -39,14 +39,14 @@ def display_main_menu():
 def display_query_menu():
     print()
     print("--------------------------------------------------------------------------------------------------------------------------------")
-    print("     Query Menu:")
-    print("     1. Query Jogadores que Vieram Emprestados de Um certo time")
-    print("     2. Query Jogadores que fizem gols em uma certa Partida com certa Data")
-    print("     3. Query Socio torcedores que assinam plano de um acima de um certo preço")
-    print("     4. Query Dados Funcionario com certo nome")
-    print("     5. Query Dados do Contrato e do Jogador com certo nome")
-    print("     6. Exit")
-    query_choice = input("     Enter your choice (1/2/3/4/5/6): ")
+    print("     Menu de Busca:")
+    print("     1. Buscar jogadores que vieram emprestados de um certo time")
+    print("     2. Buscar jogadores que fizem gols em uma certa partida com certa data")
+    print("     3. Buscar socio torcedores que assinam plano acima de um certo preço")
+    print("     4. Buscar dados de um funcionario com certo nome")
+    print("     5. Buscar dados do contrato e do jogador com certo nome")
+    print("     6. Sair")
+    query_choice = input("     Selecione sua escolha (1/2/3/4/5/6): ")
     print("--------------------------------------------------------------------------------------------------------------------------------")
     print()
     return query_choice
@@ -55,76 +55,115 @@ def display_query_menu():
 def display_update_menu():
     print()
     print("--------------------------------------------------------------------------------------------------------------------------------")
-    print("     update Menu:")
-    print("     1. Update Funcionario com certo salario para outro salario")
-    print("     2. Update Contrato de um Jogador para uma outra data")
-    print("     3. Exit")
-    insert_choice = input("     Enter your choice (1/2/3): ")
+    print("     Menu de atualização:")
+    print("     1. Atualizar salario de funcionario com certo CPF")
+    print("     2. Atualizar data do contrato de um jogador com certo CPF")
+    print("     3. Saida")
+    insert_choice = input("     Selecione sua escolha (1/2/3): ")
     print("--------------------------------------------------------------------------------------------------------------------------------")
     print()
     return insert_choice
 
 
 def query_1(connection):
-    cod_time = input("Enter the code of the time: ")
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM Jogador WHERE CPF IN (SELECT CPF FROM poremprestimo WHERE codTime = %s)",
-            (cod_time,)
-        )
-        result = cursor.fetchall()
-        if(result):
-            print("Jogadores que Vieram Emprestados de Um certo time:")
-            for row in result:
-                print(row)
-        else:
-            print("Nenhum jogador veio emprestado de um certo time")
+    cod_time = input("Favor inserir codigo do time: ")
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT * FROM Jogador WHERE CPF IN (SELECT CPF FROM poremprestimo WHERE codTime = %s)",
+                (cod_time,)
+            )
+            result = cursor.fetchall()
+            cursor.execute(
+                "SELECT Nome FROM Time WHERE time.codigo = %s",
+                (cod_time,)
+            )
+            time = cursor.fetchone()
+            if(result):
+                print("Jogadores que vieram emprestados do" , time[0].replace('Time ', ''), ":")
+                for row in result:
+                    cursor.execute(
+                        "SELECT Nome FROM Funcionario WHERE CPF = %s",
+                        (row[0],)
+                    )
+                    nome = cursor.fetchone()
+                    print("Nome:", nome[0])
+                    print("CPF:", row[0])
+
+            else:
+                print("Nenhum jogador veio emprestado do", time[0].replace('Time ' , ''))
+    except (connection):
+        print("Erro ao tentar buscar jogadores emprestados deste time")
 
 def query_2(connection):
-    partida_data = input("Enter the date of the partida (YYYY-MM-DD): ")
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM Jogador WHERE CPF IN (SELECT CPF FROM FazGol WHERE Data = %s)",
-            (partida_data,)
-        )
-        result = cursor.fetchall()
-        if(result):
-            print("Jogadores que fizeram gols em uma certa Partida com certa Data:")
-            for row in result:
-                print(row)
-        else:
-            print("Nenhum jogador fez gol em uma certa Partida com certa Data")
+    partida_data = input("Favor inserir data da partida no formato (YYYY-MM-DD): ")
+    print("\n")
+    try:
+        ##Informar nome dos jogadores que fizeram gol em uma certa partida com certa data
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT * FROM FazGol WHERE DATA = %s",
+                (partida_data,)
+            )
+
+            result = cursor.fetchall()
+            if(result):
+                print("Jogadores que fizeram gol na partida do dia", partida_data, ":\n")
+                for row in result:
+                    cursor.execute(
+                        "SELECT Nome FROM Funcionario WHERE CPF = %s",
+                        (row[0],)
+                    )
+                    nome = cursor.fetchone()
+                    print("O jogador", nome[0], "fez gol na partida do dia", partida_data, "no minuto", row[2])
+            else:
+                print("Nenhum jogador fez gol nesta partida ou não existe partida com esta data")
+    except (connection):
+        print("Erro ao tentar buscar jogadores que fizeram gols nesta partida")
 
 def query_3(connection):
-    price = input("Enter the price of the plano: ")
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM SocioTorcedor WHERE CPF IN (SELECT CPF FROM Paga WHERE Nome IN (SELECT Nome FROM Plano WHERE Valor >= %s))",
-            (price,)
-        )
-        result = cursor.fetchall()
-        if(result):
-            print("Socio torcedores que assinam plano de um acima de um certo preço:")
-            for row in result:
-                print(row)
-        else:
-            print("Nenhum socio torcedor assina plano de um acima de um certo preço")
+    price = input("Insira o valor minimo do plano: ")
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT * FROM SocioTorcedor WHERE CPF IN (SELECT CPF FROM Paga WHERE Nome IN (SELECT Nome FROM Plano WHERE Valor >= %s))",
+                (price,)
+            )
+            result = cursor.fetchall()
+            if(result):
+                print("Socio torcedores que assinam plano de preco acima de RS", price, ":\n")
+                for row in result:
+                    print("Nome:", row[1])
+                    print("CPF:", row[0])
+                    print("Endereco:", row[5])
+                    print("Telefone:", row[2])
+                    print("Email:", row[4], "\n")
+            else:
+                print("Nenhum socio torcedor assina plano de um acima de um certo preço")
+    except (connection):
+        print("Erro ao tentar buscar socio torcedores que assinam plano de um acima de um certo preço")
             
 def query_4(connection):
-    nome = input("Enter the name of a funcionario: ")
-    with connection.cursor() as cursor:
-        cursor.execute( "SELECT * FROM Funcionario WHERE Nome = %s ", (nome,) )
-        result = cursor.fetchall()
-        
-        if(result):
-            print("Dados Funcionario com nome: ", nome)
-            for row in result:
-                print(row)
-        else:
-            print("Nenhum funcionario com nome: ", nome)
+    nome = input("Insira o nome do funcionario: ")
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute( "SELECT * FROM Funcionario WHERE Nome = %s ", (nome,) )
+            result = cursor.fetchall()
+            
+            if(result):
+                print("Dados Funcionario com nome: ", nome)
+                for row in result:
+                    print("Nome:", nome)
+                    print("CPF:", row[0])
+                    print("Data de Nascimento:", row[1])
+                    print("salario:", row[3])
+            else:
+                print("Nenhum funcionario com nome: ", nome)
+    except (connection):
+        print("Erro ao tentar buscar funcionario com nome: ", nome)
             
 def query_5(connection):
-    jogador_name = input("Enter the name of the jogador: ")
+    jogador_name = input("Insira o nome do jogador: ")
     with connection.cursor() as cursor:
         cursor.execute(
             "SELECT Contrato.*, Funcionario.Nome AS NomeFuncionario, Jogador.Assistencias, Jogador.FaltasFeitas, Jogador.FaltasSofridas, Jogador.Gols "
@@ -137,7 +176,7 @@ def query_5(connection):
         result = cursor.fetchall()
 
         if result:
-            print(f"Contrato data for jogador with name '{jogador_name}':")
+            print(f"Dados do jogador '{jogador_name}':")
             for row in result:
                 print("CPF:", row[0])
                 print("numContrato:", row[1])
@@ -145,31 +184,31 @@ def query_5(connection):
                 print("DataInicio:", row[3])
                 print()
         else:
-            print(f"No contrato data found for jogador with name '{jogador_name}'")
+            print(f"Sem informacoes encontradas para jogador '{jogador_name}'")
 
 
             
 def update_1(connection):
-    cpf = input("Enter the CPF of the funcionario: ")
-    new_salary = input("Enter the new salary: ")
+    cpf = input("Insira o CPF do funcionario: ")
+    new_salary = input("Insira o novo salario: ")
     with connection.cursor() as cursor:
         cursor.execute(
             "UPDATE Funcionario SET Salario = %s WHERE CPF = %s",
             (new_salary, cpf)
         )
         connection.commit()
-        print("Salary updated successfully!")
+        print("Salario atualizado com sucesso!")
 
 def update_2(connection):
-    cpf = input("Enter the CPF of the jogador: ")
-    new_contract_date = input("Enter the new contract date (YYYY-MM-DD): ")
+    cpf = input("Insira o cpf do jogador: ")
+    new_contract_date = input("Favor inserir nova data do contrato no formato (YYYY-MM-DD): ")
     with connection.cursor() as cursor:
         cursor.execute(
             "UPDATE Contrato SET DataFim = %s WHERE CPF = %s",
             (new_contract_date, cpf)
         )
         connection.commit()
-        print("Contract date updated successfully!")
+        print("Data do contrato atualizada com sucesso!")
 
 
 
