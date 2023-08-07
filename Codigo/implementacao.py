@@ -152,11 +152,13 @@ def query_4(connection):
             
             if(result):
                 print("Dados Funcionario com nome: ", nome)
+                print("")
                 for row in result:
                     print("Nome:", nome)
                     print("CPF:", row[0])
                     print("Data de Nascimento:", row[1])
                     print("salario:", row[3])
+                    print("")
             else:
                 print("Nenhum funcionario com nome: ", nome)
     except:
