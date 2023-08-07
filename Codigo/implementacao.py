@@ -3,7 +3,7 @@ import psycopg2
 
 # Function to get database connection
 def get_database_connection():
-    db_name = os.environ.get('DB_NAME', 'postgres')
+    db_name = os.environ.get('DB_NAME', 'BDTime')
     db_user = os.environ.get('DB_USER','postgres')
     db_password = os.environ.get('DB_PASS','postgres')
     db_host = os.environ.get('DB_HOST', 'localhost')
@@ -92,8 +92,10 @@ def query_1(connection):
 
             else:
                 print("Nenhum jogador veio emprestado do", time[0].replace('Time ' , ''))
-    except:
+    except Exception as error:
+        # print(error)
         print("Erro ao tentar buscar jogadores emprestados deste time")
+        connection.rollback()
 
 def query_2(connection):
     partida_data = input("Favor inserir data da partida no formato (YYYY-MM-DD): ")
@@ -118,8 +120,10 @@ def query_2(connection):
                     print("O jogador", nome[0], "fez gol na partida do dia", partida_data, "no minuto", row[2])
             else:
                 print("Nenhum jogador fez gol nesta partida ou não existe partida com esta data")
-    except (connection):
+    except Exception as error:
+        # print(error)
         print("Erro ao tentar buscar jogadores que fizeram gols nesta partida")
+        connection.rollback()
 
 def query_3(connection):
     price = input("Insira o valor minimo do plano: ")
@@ -140,8 +144,10 @@ def query_3(connection):
                     print("Email:", row[4], "\n")
             else:
                 print("Nenhum socio torcedor assina plano de um acima de um certo preço")
-    except:
+    except Exception as error:
+        # print(error)
         print("Erro ao tentar buscar socio torcedores que assinam plano de um acima de um certo preço")
+        connection.rollback()
             
 def query_4(connection):
     nome = input("Insira o nome do funcionario: ")
@@ -161,8 +167,10 @@ def query_4(connection):
                     print("")
             else:
                 print("Nenhum funcionario com nome: ", nome)
-    except:
+    except Exception as error:
+        # print(error)
         print("Erro ao tentar buscar funcionario com nome: ", nome)
+        connection.rollback()
             
 def query_5(connection):
     jogador_name = input("Insira o nome do jogador: ")
@@ -188,8 +196,10 @@ def query_5(connection):
                     print()
             else:
                 print(f"Sem informacoes encontradas para jogador '{jogador_name}'")
-    except:
+    except Exception as error:
+        # print(error)
         print("Erro ao tentar buscar jogador com nome: ", jogador_name)
+        connection.rollback()
 
 
             
@@ -204,8 +214,10 @@ def update_1(connection):
             )
             connection.commit()
             print("Salario atualizado com sucesso!")
-    except:
+    except Exception as error:
+        # print(error)
         print("Erro ao tentar atualizar salario do funcionario")
+        connection.rollback()
 
 def update_2(connection):
     cpf = input("Insira o cpf do jogador: ")
@@ -218,8 +230,10 @@ def update_2(connection):
             )
             connection.commit()
             print("Data do contrato atualizada com sucesso!")
-    except:
+    except Exception as error:
+        # print(error)
         print("Erro ao tentar atualizar data do contrato do jogador")        
+        connection.rollback()
     
 
 def main():
